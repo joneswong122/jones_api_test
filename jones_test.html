@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Jones Nova API test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">body {
+      font-family: Arial;
+      margin: 0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      img {
+        vertical-align: middle;
+      }
+      /* Position the image container (needed to position the left and right arrows) */
+      .container {
+        position: relative;
+      }
+      /* Hide the images by default */
+      .mySlides {
+        display: none;
+      }
+      /* Add a pointer when hovering over the thumbnail images */
+      .cursor {
+        cursor: pointer;
+      }
+      /* Next & previous buttons */
+      .prev,
+      .next {
+        cursor: pointer;
+        position: absolute;
+        top: 40%;
+        width: auto;
+        padding: 16px;
+        margin-top: -50px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      /* Position the "next button" to the right */
+      .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+      }
+      /* On hover, add a black background color with a little bit see-through */
+      .prev:hover,
+      .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      /* Number text (1/3 etc) */
+      .numbertext {
+        color: #f2f2f2;
+        font-size: 12px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+      }
+      /* Container for image text */
+      .caption-container {
+        text-align: center;
+        background-color: #222;
+        padding: 2px 16px;
+        color: white;
+      }
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      /* Six columns side by side */
+      .column {
+        float: left;
+        width: 16.66%;
+      }
+      /* Add a transparency effect for thumnbail images */
+      .demo {
+        opacity: 0.6;
+      }
+      .active,
+      .demo:hover {
+        opacity: 1;
+      }
+    </style>
+    <script src="chrome-extension://mooikfkahbdckldjjndioackbalphokd/assets/prompt.js">
+    </script>
+    <script src="chrome-extension://mooikfkahbdckldjjndioackbalphokd/assets/prompt.js">
+    </script>
+  </head>
+  <body autocomplete="off">
+    <header>
+      <h1>What do you need help with?
+      </h1>
+      <p>Find resources for users and developersVideo Player API
+      </p>
+    </header>
+    <main role="main">
+      <section>
+        <article>
+          <p>The following article provides a reference to all available Connatix Player JavaScript API calls and events.
+          </p>
+          <h1 id="scope-5332">Scope
+          </h1>
+          <p>There are two classifications for the Connatix Player, which will be referenced in this documentation as Instream and Outstream. The Instream player plays video content and ads, while the Outstream player only plays ads.
+          </p>
+          <p>The functions and settings mentioned below can be applied either to only one type of player or both types of players at the same time.
+          </p>
+          <p>The functions will be referenced in the documentation as Scope. For example, <strong>&lt;&lt;</strong>scope: Instream/Outstream<strong>&gt;&gt;</strong> will apply to both types of player, whereas <strong>&lt;&lt;</strong>scope: Instream<strong>&gt;&gt;</strong> will apply only to the Instream player.
+          </p>
+          <h1 id="setup-2009">Setup
+          </h1>
+          <p>Before you start configuring the behavior of your embedded Connatix Player, you'll first need to integrate it inside your page and test that it renders properly.
+          </p>
+          <p>To load the player inside your page, you have to add and configure the required scripts correctly.
+          </p>
+          <h2 id="load-the-player-1458">Load the player
+          </h2>
+          <p>Place this code snippet in the  
+            <code>head 
+            </code> section of your page: 
+          </p>
+          <pre>
+&lt;script&gt;
+! function(n) {
+if (!window.cnx) {
+window.cnx = {}, window.cnx.cmd = [];
+var t = n.createElement("iframe");
+t.display = "none", t.onload = function() {
+var n = t.contentWindow.document,
+c = n.createElement("script");
+c.src = "//cd.connatix.com/connatix.player.js", c.setAttribute("async", "1"), c.setAttribute("type", "text/javascript"), n.body.appendChild(c)
+}, n.head.appendChild(t)
+}
+}(document);
+&lt;/script&gt;
+</pre>
+          <h2 id=" initialize,-render-and-control-the-player-3670">
+            <a id="renderingPlayer"></a> Initialize, render and control the player
+          </h2>
+          <p>Place this code snippet in the  
+            <code>body 
+            </code> section of your page:
+          </p>
+          <pre>
+&lt;script id="{{scriptId}}"&gt;
+cnx.cmd.push(function() {
+cnx({
+playerId: "{{playerId}}"
+}).render("{{scriptId}}", (renderError, playerApi) =&gt; {
+// player is ready and rendered
+});
+}
+&lt;/script&gt;
+</pre>
+          <p>Let's analyze how the  
+            <code>body 
+            </code> script works.
+          </p>
+          <ul>
+            <li>The player script on the page window defines the  
+              <code>cnx.cmd 
+              </code> array. When the player is loaded, it will call all functions pushed into this array. If the player script has already been loaded, pushing to this array will call the function immediately.</li>
+            <li>
+              <p>After the player is initialized with its settings, we have to render it to get the player API and events. To render the player, we call the render function with the id of the script tag where the call happens, or another id of an element in the page. This element is provided as reference, and the player without unique settings will render above the component.
+              </p>
+            </li>
+            <li>
+              <p>The render function can take a second parameter, which is a callback function that gets called when the player is rendered and ready and will be called with an API object parameter and an error object parameter.
+              </p>
+            </li>
+          </ul>
+          <h1 id="-configuration-9762">
+            <a id="configuration"></a>Configuration
+          </h1>
+          <p>After you've tested that the player renders inside your page, you can go ahead and configure the player.
+          </p>
+          <p>Replace the code snippet in the  
+            <code>body 
+            </code> section with the one you configure based on the instructions below. The  
+            <code>cnx(config) 
+            </code> function initializes the player with a configuration JSON.
+          </p>
+          <pre>
+&lt;script id="renderID"&gt;
+cnx.cmd.push(function() {
+cnx({
+config
+}).render('renderID');
+});
+}
+&lt;/script&gt;
+</pre>
+          <p>The following JSON object is an example containing all necessary configuration options for initializing the Connatix Player. 
+          </p>
+          <p>Use these two helpers to change attributes in an easy and type-safe way:
+          </p>
+          <ul>
+            <li>
+              <a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#configEnums">configEnums</a> - helper enums for setting object attributes</li>
+            <li>
+              <a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#configEvents">configEvents</a> - helper object containing all available events</li>
+          </ul>
+          <p><em aria-label="Note">Both helpers can be found on the  
+            <code>cnx 
+            </code> object (for example,  
+            <code>cnx.configEnums 
+            </code>).</em>
+          </p>
+          <p>After you configure the JSON object with your preferred settings, add it to the  
+            <code>body 
+            </code> script instead of  
+            <code>config 
+            </code>.
+          </p>
+          <h2 id="json-object-example-7396">JSON Object example
+          </h2>
+          <pre>
+{
+"playerId": "{{playerId}}",
+"settings": {
+"playbackMode": cnx.configEnums.PlaybackModeEnum.AutoPlay,
+"defaultSoundMode": cnx.configEnums.DefaultSoundModeEnum.OnHover,
+"nextVideoMode": cnx.configEnums.NextVideoModeEnum.Next,
+"forceSourceItemId": "{{videoId}}",
+"useExternalViewabilityService": false,
+"customization": {
+"responsive": true,
+"ratioWidth": 16,
+"ratioHeight": 9,
+"fixedWidth": 600,
+"fixedHeight": 400,
+"showMuteWatermark": true,
+"showExpandButton": true,
+"closedCaptionDefault": false,
+"closeButtonMode": cnx.configEnums.CloseButtonModeEnum.On,
+"iconsColor": "#fff",
+"accentColor": "red",
+"tooltipTextColor": "#fff",
+"tooltipBackgroundColor": "#ffe4c4",
+"logoPosition": cnx.configEnums.LogoPositionEnum.BottomRight,
+"logoUrl": "{{logoUrl}}",
+"alwaysDisplayControls": true
+},
+"rendering": {
+"forceInsertPath": true,
+"scrollHijackingProtection": true,
+"containerSelector": ".container-class",
+"insertPosition": cnx.configEnums.InsertPositionEnum.WithinContainer,
+"position": 2
+},
+"playlist": [{
+"title": "your title here",
+"description": "your description here",
+"imageUrl": "{{imageUrl}}",
+"sources": [{
+"file": "{{videoUrl480p}}",
+"quality": cnx.configEnums.QualityEnum.Medium480p
+}],
+"clickUrl": "{{clickUrl}}"
+},
+{
+"title": "your title here",
+"imageUrl": "{{imageUrl}}",
+"sources": [{
+"file": "{{videoUrl144p}}",
+"quality": cnx.configEnums.QualityEnum.Low144p
+},
+{
+"file": "{{videoUrl240p}}",
+"quality": cnx.configEnums.QualityEnum.Low240p
+},
+],
+"clickUrl": "{{clickUrl}}"
+}
+]
+}
+}
+</pre>
+          <h2 id="attributes-9977">Attributes
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+                <td><strong>Scope</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>playerId
+                </td>
+                <td>String containing the player unique identifier.
+                </td>
+                <td>String
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>customParam1
+                </td>
+                <td>Custom string where anything can be passed. Used in Reporting in the Management Dashboard. User can then filter by this custom parameter.
+                </td>
+                <td>String
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>customParam2
+                </td>
+                <td>Custom string where anything can be passed. Used in Reporting in the Management Dashboard. User can then filter by this custom parameter.
+                </td>
+                <td>String
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>customParam3
+                </td>
+                <td>Custom string where anything can be passed. Used in Reporting in the Management Dashboard. User can then filter by this custom parameter.
+                </td>
+                <td>String
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>mediaId
+                </td>
+                <td>Id of the media to be played. If provided, player will ignore playlist or playlistId settings.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>playlistId
+                </td>
+                <td>Id of the playlist to be played. String with GUID format.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#settings">settings</a>
+                </td>
+                <td>Group of attributes that set the default state of the player.
+                </td>
+                <td>Object
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-settings-5298">
+            <a id="settings"></a>settings
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+                <td><strong>Scope</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>playbackMode
+                </td>
+                <td>Sets the playback mode.
+                </td>
+                <td>PlaybackModeEnum
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>defaultSoundMode
+                </td>
+                <td>Sets the default sound mode.
+                </td>
+                <td>DefaultSoundModeEnum
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>nextVideoMode
+                </td>
+                <td>Sets the automatic play mode to one of the values in the enumeration.
+                </td>
+                <td>NextVideoModeEnum
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>playlist
+                </td>
+                <td>Items - external media items. If custom playlist will be provided, player will ignore the playlistId setting.
+                </td>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#playlist">String Array Item</a>
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#rendering">rendering</a>
+                </td>
+                <td>Group of attributes that dictate how the player will be inserted in the page.
+                </td>
+                <td> 
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#customization">customization</a>
+                </td>
+                <td>Group of attributes that dictate how the player will look like.
+                </td>
+                <td> 
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>disableAdvertising
+                </td>
+                <td>
+                  <p>If set player will not render any advertising (video ads).
+                  </p>
+                  <p>The default value is false.
+                  </p>
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>disableClickUrl
+                </td>
+                <td>
+                  <p>If set true, clicking the player (when playing) will not redirect to a different URL. (If the playing video has a Click URL defined.)
+                  </p>
+                  <p>The default value is false.
+                  </p>
+                </td>
+                <td>Boolean 
+                </td>
+                <td> Instream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#advertising">advertising</a>
+                </td>
+                <td>Object containing settings for advertising.
+                </td>
+                <td>Object
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>useExternalViewabilityService
+                </td>
+                <td>
+                  <p>If this settings is true, we will not detect whether the player is or isn't into view. In this scenario, viewable percentage can be set through the setViewableThreshold method.
+                  </p>
+                  <p>The default value is false.
+                  </p>
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#outstream">outstreamSettings</a>
+                </td>
+                <td>Object containing settings only for Outstream player.
+                </td>
+                <td>Object
+                </td>
+                <td>Outstream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#gallery">gallery</a>
+                </td>
+                <td>Object containing settings for gallery feature.
+                </td>
+                <td>Object
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#plugins">plugins</a>
+                </td>
+                <td>
+                  <p>Object containing settings for Player Plugins:
+                  </p>
+                  <ul>
+                    <li>External Measurement, which contains Adobe Analytics SDK.</li>
+                  </ul>
+                </td>
+                <td>Object
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>forceSourceItemId
+                </td>
+                <td> The default value is undefined.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>queryJsTargeting
+                </td>
+                <td>The object containing query targeting key-value pairs used for lineItems.
+                </td>
+                <td>
+                  <p>Object:
+                  </p>
+                  <p>{key: value}
+                  </p>
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>implementationType
+                </td>
+                <td>This sets the value for implementation type (either Web or AMP).
+                </td>
+                <td>
+                  <ul>
+                    <li>Web (0) - Default</li>
+                    <li>AMP (1)</li>
+                  </ul>
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-playlist-item-5721">
+            <a id="playlist"></a>playlist item
+          </h2>
+          <p>Each playlist item can provide an optional media id. The media id needs to match with an external media item configured in the Elements Console. When provided with a media id that matches the configured item, only then the player will register the analytics for said media. The player will register all media related events. If not provided, no analytics and trackings will be registered for the external media.
+          </p>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Required</strong>
+                </td>
+                <td><strong>String</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>title
+                </td>
+                <td>The title of the playlist item.
+                </td>
+                <td>Mandatory (It is optional for liveStreamFilePath)
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>imageUrl
+                </td>
+                <td>This is the media file thumbnail.
+                </td>
+                <td>Mandatory
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+              <tr>
+                <td>id
+                </td>
+                <td>
+                  <p>Media id - this will be the media taken from the management console.
+                  </p>
+                  <p>Must match the external media item configured in the Elements Console.
+                  </p>
+                </td>
+                <td>Optional
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>description
+                </td>
+                <td>
+                  <p>This is the description defined in the playlist.
+                  </p>
+                  <p>Depends on whether the media id was given or not.
+                  </p>
+                </td>
+                <td>Optional
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>sources
+                </td>
+                <td>This represents an array of sources.
+                </td>
+                <td> 
+                </td>
+                <td>Array &lt;<a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#source">source</a>&gt;
+                </td>
+              </tr>
+              <tr>
+                <td>clickUrl
+                </td>
+                <td>This is the URL encoded string for page to be redirected to when a click interaction happens on the video when it is playing.
+                </td>
+                <td>Optional
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+              <tr>
+                <td>hlsFilePath
+                </td>
+                <td>This is the manifest file URL.
+                </td>
+                <td>Optional
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+              <tr>
+                <td>liveStreamFilePath
+                </td>
+                <td>This is the live stream URL. If this is present in the API, the player will be forced in live stream mode.
+                </td>
+                <td>Optional
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+              <tr>
+                <td>liveStreamStartDate
+                </td>
+                <td>This sets the start date for the URL.
+                </td>
+                <td>Optional
+                </td>
+                <td>String Timestamp
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-source-1992">
+            <a id="source"></a>source
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Required</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>file
+                </td>
+                <td>This is a media file URL.
+                </td>
+                <td>Mandatory
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+              <tr>
+                <td>quality
+                </td>
+                <td>This is the resolution of the media file.
+                </td>
+                <td>Optional
+                </td>
+                <td>QualityEnum
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-rendering-4200">
+            <a id="rendering"></a>rendering
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>containerSelector
+                </td>
+                <td>This inserts the path for the target element, where the player will render. The value will be a <strong>CSS selector</strong>.
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>insertPosition
+                </td>
+                <td>This tells the script where to insert the player.
+                </td>
+                <td>InsertPositionEnum
+                </td>
+              </tr>
+              <tr>
+                <td>position
+                </td>
+                <td>This is only available if insertPosition is WithinContainer. (0)
+                  <br>
+                  Position number that represents where in the container’s child the player should be rendered.
+                  <br>
+                  For example, if position=2, then player will be the second child in the selected container.
+                </td>
+                <td>Number
+                </td>
+              </tr>
+              <tr>
+                <td>forceInsertPath
+                </td>
+                <td>If set to true, then we don't care about anything else and use the insert path for the player.
+                </td>
+                <td>Boolean
+                </td>
+              </tr>
+              <tr>
+                <td>scrollHijackingProtection
+                </td>
+                <td>This setting says that the publisher does not want us to rewrite the scroll functions. Therefore, when this is true, we must not start a scroll enforcer.
+                </td>
+                <td>Boolean
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-customization-2551">
+            <a id="customization"></a>customization
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+                <td><strong>Scope</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>responsive
+                </td>
+                <td>Sets type of layout to be used by the player. If it's set to true, the player will be responsive.
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>ratioWidth
+                </td>
+                <td>Used when responsive = true
+                  <br>
+                  The ratio is calculated using the following formula: ratioHeight /ratioWidth * 100.
+                </td>
+                <td>Number
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>ratioHeight
+                </td>
+                <td>Used when responsive = true.
+                </td>
+                <td>Number
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>fixedWidth
+                </td>
+                <td>Used when responsive = false.
+                </td>
+                <td>Number
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>fixedHeight
+                </td>
+                <td>Used when responsive = false.
+                </td>
+                <td>Number
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>showMuteWatermark
+                </td>
+                <td>Boolean that controls the visibility of the mute watermark.
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>showExpandButton
+                </td>
+                <td>Boolean that controls the visibility of the expand button.
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>closedCaptionDefault
+                </td>
+                <td>Boolean that controls the default visibility of the captions.
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#closeButton">closeButtonMode</a>
+                </td>
+                <td>Enum that controls how the close button should be displayed.
+                </td>
+                <td>Enum
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>iconsColor
+                </td>
+                <td>The color themes are set as default in the console. They can all be changed at the same time, set only one or two of them (for example, you can set iconsColor and accentColor) or kept altogether as default.
+                  <br>
+                  String with CSS valid color for icons.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>accentColor
+                </td>
+                <td>String with CSS valid color for accent color.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>tooltipTextColor
+                </td>
+                <td>String with CSS valid color for tooltip text color.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>tooltipBackgroundColor
+                </td>
+                <td>String with CSS valid color for tooltips background.
+                </td>
+                <td>String
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>logoPosition
+                </td>
+                <td>Enum that represents logo type and position.
+                </td>
+                <td>LogoPositionEnum
+                </td>
+                <td>Instream/Outstream
+                  <br>
+                  Note: ControlBar = 1 is only available for Instream, and Center = 6 is only available for Outstream.
+                </td>
+              </tr>
+              <tr>
+                <td>logoUrl
+                </td>
+                <td>String with URL of the logo.
+                </td>
+                <td>String
+                </td>
+                <td> 
+                </td>
+              </tr>
+              <tr>
+                <td>alwaysDisplayControls
+                </td>
+                <td>If set to true, will always show control bar, except in pre-roll and post-roll.
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#floating">floating</a>
+                </td>
+                <td>Object containing floating settings.
+                </td>
+                <td>Object
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-closebuttonmode -5961">
+            <a id="closeButton"></a>closeButtonMode 
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>closeButtonMode
+                </td>
+                <td>Controls how the close button should be displayed.
+                </td>
+                <td>
+                  <ul>
+                    <li>Off (0)</li>
+                    <li>OnHover (1) (In-stream/Out-stream)</li>
+                    <li>OnHoverAfterFirstAd (2) (In-stream)</li>
+                    <li>AlwaysOn (3) (In-stream/Out-stream)</li>
+                  </ul>
+                  <p>Used only for backwards compatibility:
+                  </p>
+                  <ul>
+                    <li>On (1) (In-stream/Out-stream) - replaced with OnHover</li>
+                    <li>OnAfterFirstAd (2) (In-stream) - replaced with OnHoverAfterFirstAd</li>
+                  </ul>
+                </td>
+                <td>CloseButtonModeEnum
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 id="-configenums-2213">
+            <a id="configEnums"></a>configEnums
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PlaybackModeEnum
+                </td>
+                <td>Helper enum for playbackMode setting attribute.
+                </td>
+                <td>
+                  <ul>
+                    <li>AutoPlay(0)</li>
+                    <li>ScrollToPlay(1)</li>
+                    <li>ClickToPlay(2)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>DefaultSoundModeEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>On(0)</li>
+                    <li>Off(1)</li>
+                    <li>OnHover(2)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>NextVideoModeEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>Next(0)</li>
+                    <li>Loop(1)</li>
+                    <li>Stop(2)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>InsertPositionEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>WithinContainer (0)</li>
+                    <li>BeforeContainer (1)</li>
+                    <li>AfterContainer (2)</li>
+                    <li>ReplaceContainer (3)</li>
+                    <li>HideContainer (4)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>CloseButtonModeEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>Off(0)</li>
+                    <li>On(1)</li>
+                    <li>OnAfterFirstAd(2)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>LogoPositionEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>None (0)</li>
+                    <li>ControlBar ()</li>
+                    <li>BottomRight</li>
+                    <li>BottomLeft</li>
+                    <li>TopRight</li>
+                    <li>TopLeft</li>
+                    <li>Center</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>QualityEnum
+                </td>
+                <td>Possible values for video source quality.
+                </td>
+                <td>
+                  <ul>
+                    <li>Low144p</li>
+                    <li>Low240p</li>
+                    <li>Medium360p</li>
+                    <li>Medium480p</li>
+                    <li>High720p</li>
+                    <li>High1080p</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>PlayerTypeEnum
+                </td>
+                <td>Helper to identify between Instream and Outstream player.
+                </td>
+                <td>
+                  <ul>
+                    <li>InStream</li>
+                    <li>OutStream</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>initialRenderingEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>ExpandWithAd</li>
+                    <li>FullyRendered</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>EndAdBreakPolicyEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>Hide</li>
+                    <li>HouseScreen</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>ErrorTypesEnum
+                </td>
+                <td>Enum with all possible types of rendering errors.
+                </td>
+                <td>
+                  <ul>
+                    <li>SetupError</li>
+                    <li>NoPlayer (when provided player id was not served)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>LineItemExcludedSlotsEnum
+                </td>
+                <td>Helper enum for line item's "excludedSlots" settings.
+                </td>
+                <td>
+                  <ul>
+                    <li>PreRoll</li>
+                    <li>MidRoll</li>
+                    <li>PostRoll</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>GalleryStyleModeEnum
+                </td>
+                <td>Helper enum for gallery style modes.
+                </td>
+                <td>
+                  <ul>
+                    <li>None</li>
+                    <li>Detailed</li>
+                    <li>Visual</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>GalleryOrientationEnum
+                </td>
+                <td>Helper enum for gallery orientation modes.
+                </td>
+                <td>
+                  <ul>
+                    <li>Landscape</li>
+                    <li>Portrait</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>FloatingModeEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>Off</li>
+                    <li>OnPageLoad</li>
+                    <li>AfterInView</li>
+                    <li>Always</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>FloatingDeviceEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>Desktop</li>
+                    <li>Smartphone</li>
+                    <li>Tablet</li>
+                    <li>Other (for example, GameConsole)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>FloatingFixedPositionModeEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>Page</li>
+                    <li>Element</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>FloatingScrollPositionEnum
+                </td>
+                <td> 
+                </td>
+                <td>
+                  <ul>
+                    <li>BottomRight</li>
+                    <li>BottomLeft</li>
+                    <li>TopRight</li>
+                    <li>TopLeft</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>ImplementationTypeEnum
+                </td>
+                <td>Helper for ImplementationType setting.
+                </td>
+                <td>
+                  <ul>
+                    <li>web</li>
+                    <li>AMP</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="configevents-9797">
+            <a id="configEvents"></a>configEvents
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PlaybackModeEnum
+                </td>
+                <td>Helper objects with all the events that can be listened to. Properties of this object correspond with all Events described below. for example,
+                  <br>
+                  Access an event: cnx.configEvents.AdClick
+                  <br>
+                  Note: All events properties on this object start with upper case letters.
+                </td>
+                <td>Enums
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="advertising-2137">
+            <a id="advertising"></a>advertising
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+                <td><strong>Scope</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#lineItem">lineItems</a>
+                </td>
+                <td>Array of client side connections to VASTs.
+                </td>
+                <td> 
+                </td>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#lineItem">Array lineItem</a>
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>blockConnatixDemand
+                </td>
+                <td>If set, the player will only use external line items provided by the external API. If not set, the Ad Manager will also use line items that are targeted on this player through the console.
+                </td>
+                <td>Default: False
+                </td>
+                <td>Boolean
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>timeBetweenAds
+                </td>
+                <td>Minimum time in seconds that must elapse after displaying an ad on mid-roll slot before playing the next scheduled ad.
+                </td>
+                <td> 
+                </td>
+                <td> 
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>timeBeforeFirstAd
+                </td>
+                <td>The time before first ad can start.
+                </td>
+                <td> 
+                </td>
+                <td> 
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>macros
+                </td>
+                <td>Key value pairs of macros to be substituted in lineItems URLs before calling for VAST Ads.
+                  <br>
+                  If any of the macro keys match the "Connatix macros" (for example, height, page_Url), the values provided programmatically by the user will override the values detected by the player only for the externally loaded lineItems.
+                </td>
+                <td> 
+                </td>
+                <td>Object :{key: value }
+                </td>
+                <td>Instream/Outstream
+                </td>
+              </tr>
+              <tr>
+                <td>preRollBreak
+                </td>
+                <td>Timeout in milliseconds for a pre-roll brake. When set, the player will wait the given amount of time before starting content for showing a video advertisement. If set to 0, preRoll is disabled.
+                </td>
+                <td> 
+                </td>
+                <td>Int
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>postRollBreak
+                </td>
+                <td>Timeout in milliseconds for a post-roll brake. Player will try to get a video ad after the video content has finished for this amount of time. If set to 0, postRoll is disabled.
+                </td>
+                <td> 
+                </td>
+                <td>Int
+                </td>
+                <td>Instream
+                </td>
+              </tr>
+              <tr>
+                <td>maxNumberOfMidRolls
+                </td>
+                <td>How many video advertisements are allowed during a video content playing. Rewrites setting from console.
+                </td>
+                <td> 
+                </td>
+                <td>Int
+                </td>
+                <td>Instream/Outstream
+                  <br>
+                  Note: For Outstream it is considered as Total number of Ads.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-lineitems-8566">
+            <a id="lineItem"></a>lineItems
+          </h2>
+          <p>Each provided line item needs to have an id that matches the id of a management console line item.
+          </p>
+          <p>The configured console line item must be of type external. In other words, when creating a line item, you can choose to use an external line item. If so, you first need to create the external line item in the console, and the id that you choose in the Elements platform has to match the already created one.
+          </p>
+          <p>The external line item has the function to set a URL connection or headerBidderBids, as well as override settings of the Line Item configured in the management console.
+          </p>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Required</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>id
+                </td>
+                <td>The id of the external line item configured in the management console. String with GUID format.
+                </td>
+                <td>Mandatory
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>cpm
+                </td>
+                <td> Cost per Mile - dollars for 1000 impressions. Decimal.
+                </td>
+                <td>Mandatory
+                </td>
+                <td> 
+                </td>
+              </tr>
+              <tr>
+                <td>Url
+                </td>
+                <td>URL to be called.
+                </td>
+                <td>Mandatory to choose between URL or header bidder
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>headerBidderBids
+                </td>
+                <td>headerBidderBids to be called
+                </td>
+                <td>Mandatory to choose between header bidder or URL
+                </td>
+                <td>Array
+                </td>
+              </tr>
+              <tr>
+                <td>headerBidderTimeout
+                </td>
+                <td>If headerBidderBids is called, headerBidderTimeout is also mandatory. Set in milliseconds.
+                </td>
+                <td>Mandatory
+                </td>
+                <td>Numerical
+                </td>
+              </tr>
+              <tr>
+                <td>title
+                </td>
+                <td>Name for the Line Item. To be used in Reporting.
+                </td>
+                <td>Optional
+                </td>
+                <td> 
+                </td>
+              </tr>
+              <tr>
+                <td>priority
+                </td>
+                <td>Priority in Ad Manager.
+                </td>
+                <td>Optional
+                  <br>
+                  Default value will be "Default"
+                  <ul>
+                    <li>Top</li>
+                    <li>Preferred</li>
+                    <li>Default</li>
+                    <li>House</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>contentRequestCap
+                </td>
+                <td>Max number of times this connection can be called during a video content.
+                </td>
+                <td>Optional
+                </td>
+                <td>Int
+                </td>
+              </tr>
+              <tr>
+                <td>contentImpressionCap
+                </td>
+                <td>Max number of impressions the line item can bring during a video content playing.
+                </td>
+                <td>Optional
+                </td>
+                <td>Int
+                </td>
+              </tr>
+              <tr>
+                <td>ignoreFilledRequests
+                </td>
+                <td>Content request will be ignored in case that request makes an impression.
+                </td>
+                <td>Optional
+                </td>
+                <td> 
+                </td>
+              </tr>
+              <tr>
+                <td>excludedSlots
+                </td>
+                <td>Will contain the slots in which the Line Item will not be allowed to be rendered.
+                </td>
+                <td>
+                  <ul>
+                    <li>PreRoll = 0</li>
+                    <li>MidRoll = 1</li>
+                    <li>PostRoll = 2</li>
+                  </ul>
+                </td>
+                <td>Enum[]
+                  <br>
+                  for example, "[0, 1]" - line item won't be rendered in preroll and midroll, only in postroll.
+                  <br>
+                  Note: In case of Outstream, only MidRoll allowed lineItems are served.
+                </td>
+              </tr>
+              <tr>
+                <td>viewability
+                </td>
+                <td>If set, this lineItem will only be played if player is in view.
+                </td>
+                <td>Optional
+                </td>
+                <td>Boolean
+                </td>
+              </tr>
+              <tr>
+                <td>sound
+                </td>
+                <td>If set, this line item will only be played if player is playing with sound.
+                </td>
+                <td>Optional
+                </td>
+                <td>Boolean
+                </td>
+              </tr>
+              <tr>
+                <td>timeBetweenRequests
+                </td>
+                <td>The interval in seconds in which the line item can make requests.
+                </td>
+                <td> 
+                </td>
+                <td>Number
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-outstreamsettings-3688">
+            <a id="outstream"></a>outstreamSettings
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>initialRendering
+                </td>
+                <td>How the outstream player is rendered before showing the first ad.
+                </td>
+                <td>
+                  <ul>
+                    <li>ExpandWithAd = 0 ( player is hidden before showing first ad )</li>
+                    <li>FullyRendered = 1 ( player is not hidden, and house screen is visible before showing first ad )</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>houseScreenColor
+                </td>
+                <td> 
+                </td>
+                <td>Any hexadecimal color.
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>totalAdBreakLength
+                </td>
+                <td>Total time allowed to call and show Ads. When this time ends, it will enter the endAdBreakPolicy.
+                  <br>
+                  <strong>Note: In seconds.</strong>
+                </td>
+                <td>1 - 2000000
+                </td>
+                <td>Int
+                </td>
+              </tr>
+              <tr>
+                <td>endAdBreakPolicy
+                </td>
+                <td>When total number of ads (maxMidrollNumber) is reached or when totalAdBreakLength expires the player will enter its endAdBreakPolicy.
+                </td>
+                <td>
+                  <ul>
+                    <li>Hide = 0 (player will collapse/hide and no further ads will be shown ).</li>
+                    <li>HouseScreen = 1( the house screen will be visible, and no further ads will be shown )</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-gallery-1159">
+            <a id="gallery"></a>gallery
+          </h2>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Style
+                </td>
+                <td>Settings to control the gallery style:
+                  <ul>
+                    <li>None - no gallery is shown</li>
+                    <li>Detailed - detailed card style</li>
+                    <li>Visual - visual cards style with focus on the image and title</li>
+                  </ul>
+                </td>
+                <td>GalleryStyleModeEnum
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>Orientation
+                </td>
+                <td>Controls to the gallery orientation mode:
+                  <ul>
+                    <li>Landscape - gallery cards are shown to the right of the player</li>
+                    <li>Portrait - gallery cards are shown below the player</li>
+                  </ul>
+                </td>
+                <td>GalleryOrientationEnum
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="-plugins-6515">
+            <a id="plugins"></a>plugins
+          </h2>
+          <table border="1px">
+            <tbody>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>adobeAnalyticsSettings
+                </td>
+                <td>
+                  <p>Object containing settings for Adobe Analytics.
+                  </p>
+                  <p>In order to init this plugin, we need to pass several settings like  
+                    <code>trackingServer 
+                    </code>,  
+                    <code>account 
+                    </code>,  
+                    <code>visitorId 
+                    </code>, described below.
+                  </p>
+                </td>
+                <td>
+                  <p>
+                    <code>trackingServer 
+                    </code>- string
+                  </p>
+                  <p>
+                    <code>account 
+                    </code>- string
+                  </p>
+                  <p>
+                    <code>visitorId 
+                    </code>- string
+                  </p>
+                </td>
+                <td>Object
+                </td>
+              </tr>
+              <tr>
+                <td>trackingServer
+                </td>
+                <td>Server for the tracking media.
+                </td>
+                <td>
+                  <code>"<a href="https://support.connatix.com/hc/en-us/articles/customer.tracking.server.com" rel="nofollow">customer.tracking.server.com</a>" 
+                  </code>
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>account
+                </td>
+                <td>Account name used for Measurement.
+                </td>
+                <td>
+                  <code>"customertraking" 
+                  </code>
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>visitorId
+                </td>
+                <td>Visitor ID.
+                </td>
+                <td>
+                  <code>"CB68E4BA55144CAA0A4C98A5@AdobeOrg" 
+                  </code>
+                </td>
+                <td>String
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h3 id="example-of-a-script-with-a-valid-plugins-settings-object-5334">Example of a script with a valid plugins settings object
+          </h3>
+          <pre>
+&lt;script id="fa455e5cb6e04b949e4ba6ade7a4ba3e"&gt;
+cnx.cmd.push(function () {
+cnx({
+playerId: 'c3dcb625-fd10-47a1-a45a-6ee1ffdd74f7',
+settings: {
+plugins: {
+adobeAnalyticsSettings: {
+trackingServer: 'customer.tracking.server.com',
+account: 'customertraking',
+visitorId: 'CB68E4BA55144CAA0A4C98A5@AdobeOrg',
+},
+_debugLogging: true,
+},
+}
+}).render('fa455e5cb6e04b949e4ba6ade7a4ba3e');
+});
+&lt;/script&gt;
+</pre>
+          <h2 id="-floating-8378">
+            <a id="floating"></a>floating
+          </h2>
+          <table border="1px">
+            <tbody>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>mode
+                </td>
+                <td>Describes the mode of the floating player.
+                </td>
+                <td>
+                  <p>Off=0
+                  </p>
+                  <p>OnPageLoad=1
+                  </p>
+                  <p>AfterInView=2
+                  </p>
+                  <p>Always=3
+                  </p>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>closeButton
+                </td>
+                <td>Describes the rendering of the close button in floating mode.
+                </td>
+                <td>
+                  <p>Off=0
+                  </p>
+                  <p>AlwaysOn=1
+                  </p>
+                  <p>AfterFirstAd=2
+                  </p>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>device
+                </td>
+                <td>Describes the device on which the floating mode will render.
+                </td>
+                <td>
+                  <p>Desktop=0
+                  </p>
+                  <p>Smartphone=1
+                  </p>
+                  <p>Tablet=2
+                  </p>
+                  <p>Other=3
+                  </p>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>fixedPosition
+                </td>
+                <td>Describes whether the floating position is relative to a certain element on the page or on the whole page.
+                </td>
+                <td>
+                  <p>Page=0
+                  </p>
+                  <p>Element=1
+                  </p>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>scrollPosition
+                </td>
+                <td>Describes the position of the video player when the user is scrolling.
+                </td>
+                <td>
+                  <p>BottomRight=0
+                  </p>
+                  <p>BottomLeft=1
+                  </p>
+                  <p>TopRight=2
+                  </p>
+                  <p>TopLeft=3
+                  </p>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>floatingGutterX
+                </td>
+                <td>Describes the gutter of the floating video on the X axis.
+                </td>
+                <td>-
+                </td>
+                <td>Number
+                </td>
+              </tr>
+              <tr>
+                <td>floatingGutterY
+                </td>
+                <td>Describes the gutter of the floating video on the Y axis.
+                </td>
+                <td>-
+                </td>
+                <td>Number
+                </td>
+              </tr>
+              <tr>
+                <td>floatingWidth
+                </td>
+                <td>Describes the width of the video player when in floating state.
+                </td>
+                <td>Defaulted to 400
+                </td>
+                <td>Number
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="player-renderer-3536">Player Renderer
+          </h2>
+          <p>cnx.render(scriptId, readyCallback)
+          </p>
+          <p><strong>scope:</strong> Instream/Outstream
+          </p>
+          <p>This function renders the player on the page, based on the scriptId given, and then calls the readyCallback (check its description in the Params table) after the player has rendered.
+          </p>
+          <pre>
+&lt;script id="{{scriptId}}"&gt;
+cnx.cmd.push(function() {
+cnx({
+playerId: "{{playerId}}"
+}).render("{{scriptId}}", (renderError, playerApi) =&gt; {
+if (renderError) {
+// An error occured while rendering the player
+if (renderError.type === cnx.configEnums.ErrorTypesEnum.NoPlayer) {
+// Player was not served or id given is incorrect
+} else {
+// There was an error rendering the player
+}
+return;
+} else {
+// Here the playerApi is safe to use
+playerApi.play();
+}
+});
+}
+&lt;/script&gt;
+</pre>
+          <h3 id="params-2543">Params
+          </h3>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Name</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Required</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>scriptId
+                </td>
+                <td>An id of the script element (or any element in the page) which is used for rendering the player. The player will render above it if no special rendering settings are given at init (or in the management dashboard).
+                </td>
+                <td>Must be an id of an element in the rendered DOM of the page.
+                </td>
+                <td>Mandatory
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>readycallback
+                </td>
+                <td>A callback function which will be called when the player is rendered in the page and initialized.
+                </td>
+                <td> 
+                </td>
+                <td>Optional
+                </td>
+                <td>Function
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h3 id="readycallback-6676">ReadyCallback
+          </h3>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Param</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>renderError
+                </td>
+                <td>If the callback is called with a defined renderError, then it means there was an error rendering the player. If it's undefined, then the player has rendered successfully.
+                </td>
+                <td>Can be the error object described below or undefined.
+                </td>
+                <td>renderError
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#playerApi">playerApi</a>
+                </td>
+                <td>This is the main object that has all the methods of the Api described below. It will be undefined if an error has occurred.
+                </td>
+                <td>Can be the Api object described below or undefined.
+                </td>
+                <td>playerApi
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h3 id="rendererror-8425">renderError
+          </h3>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Property</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>type
+                </td>
+                <td>An enum describing the type of error that has occurred.
+                </td>
+                <td> 
+                </td>
+                <td>ErrorTypesEnum
+                </td>
+              </tr>
+              <tr>
+                <td>message
+                </td>
+                <td>A description about the error.
+                </td>
+                <td>Description of the error or empty string.
+                </td>
+                <td>String
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h1 id="api-events-9698">API Events
+          </h1>
+          <p>The following deals with the enumeration of events fired through the lifecycle of the player. All events can be subscribed to using the configEvents helper object described above (<a href="https://support.connatix.com/hc/en-us/articles/360024180553-Video-Player-API-#configEvents">configEvents</a> table). For example:
+          </p>
+          <pre>
+// subscribe to play event using string
+playerApi.on("play", function() {
+// do something
+});
+// subscribe to play event using configEvents helper
+playerApi.on(cnx.configEvents.Play, function() {
+// do something
+});
+</pre>
+          <h2 id="how-to-3535">How to
+          </h2>
+          <p>Register with an anonymous function:
+          </p>
+          <pre>
+playerApi.on("eventName", function(eventData) {
+// do something
+});
+</pre>
+          <p>Register with a named function:
+          </p>
+          <pre>
+playerApi.on("eventname", callbackFunction);
+function callbackFunction(eventData) {
+// do something
+}
+</pre>
+          <p>Fire event once:
+          </p>
+          <pre>
+playerApi.once("eventname", callbackFunction);
+// or with an anonymous function
+playerApi.once("eventname", function(eventData) {
+// do something
+});
+</pre>
+          <p>Remove event listeners:
+          </p>
+          <pre>
+// Remove specific event listener with a named function
+playerApi.remove("eventName", callbackFunction);
+// Remove all event listeners
+playerApi.removeAll();
+// remove event listener using an anonymous function
+// simply save the return function from the event subscription and then call that function to destroy it
+var eventDestroy = playerApi.on("eventName", function(eventData) {
+// do something
+});
+eventDestroy();
+</pre>
+          <h2 id="init-8808">Init
+          </h2>
+          <p>scope: Instream/Outstream
+          </p>
+          <p><strong>removed</strong> - Fires when player is removed from the publisher’s page.
+          </p>
+          <h2 id="advertising-3204">Advertising
+          </h2>
+          <p>scope: Instream/Outstream
+          </p>
+          <p><strong>adClick</strong> - Fires when an ad is clicked.
+          </p>
+          <p><strong>adPlay</strong> - Fires when an ad starts playing.
+          </p>
+          <p><em aria-label="Note">If you want to know when an ad is shown, use the adImpression event. If you want to know when the ad is resumed after being paused, use the adPlay event.</em>
+          </p>
+          <p><strong>adPause</strong> - Fires when an ad is paused.
+          </p>
+          <p><strong>adImpression</strong> - Fires when an ad is loaded. (Ad is shown here.)
+          </p>
+          <p><strong>adCompleted25</strong> - Fires when 25% of the ad has played.
+          </p>
+          <p><strong>adCompleted50</strong> - Fires when 50% of the ad has played.
+          </p>
+          <p><strong>adCompleted75</strong> - Fires when 75% of the ad has played.
+          </p>
+          <p><strong>adCompleted100</strong> - Fires when 100% of the ad has played.
+          </p>
+          <p><strong>adSkipped</strong> - Fires when the skip ad button is clicked.
+          </p>
+          <p><strong>adStopped</strong> - Fires when the ad has stopped.
+          </p>
+          <p><strong>adCompanion</strong> - Fires when an ad companion was provided, and will return the following info:
+          </p>
+          <p><strong>adCycleComplete (scope: Outstream)</strong> - Fires when Ad Cycle is completed. This can be triggered by either the maxNumberOfMidRolls or totalAdBreakLength.
+          </p>
+          <p>adCompanion
+          </p>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Description</strong>
+                </td>
+                <td><strong>Possible Values</strong>
+                </td>
+                <td><strong>Type</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>companionClickUrl
+                </td>
+                <td>Branding type.
+                </td>
+                <td> 
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>width
+                </td>
+                <td>Width of the companion banner ad.
+                </td>
+                <td> 
+                </td>
+                <td>Int
+                </td>
+              </tr>
+              <tr>
+                <td>height
+                </td>
+                <td>Height of the companion banner ad.
+                </td>
+                <td> 
+                </td>
+                <td>Int
+                </td>
+              </tr>
+              <tr>
+                <td>creativeUrl
+                </td>
+                <td>URL of the creative.
+                </td>
+                <td> 
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+              <tr>
+                <td>type
+                </td>
+                <td>Companion ad displaying methods.
+                </td>
+                <td>
+                  <ul>
+                    <li>Static (0)</li>
+                    <li>iFrame (1)</li>
+                  </ul>
+                </td>
+                <td>Enum
+                </td>
+              </tr>
+              <tr>
+                <td>trackingPixelsArray
+                </td>
+                <td>Array of tracking pixels.
+                </td>
+                <td> 
+                </td>
+                <td>Array
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <h2 id="content-5703">Content
+          </h2>
+          <p>scope: Instream
+          </p>
+          <p>Every content event will also pass the video details object:
+          </p>
+          <table border="1px">
+            <thead>
+              <tr>
+                <td><strong>Attribute</strong>
+                </td>
+                <td><strong>Types</strong>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>id
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>title
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>description
+                </td>
+                <td>String
+                </td>
+              </tr>
+              <tr>
+                <td>duration
+                </td>
+                <td>Number
+                </td>
+              </tr>
+              <tr>
+                <td>keywords
+                </td>
+                <td>String Array
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p>clickUrl
+                  </p>
+                  <p>Will be an empty string if the video does not have a click Url set.
+                  </p>
+                </td>
+                <td>String URL
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p> 
+          </p>
+          <p><strong>videoStarted</strong> - Fires when a new video is started.
+          </p>
+          <p><strong>videoCompleted25</strong> - Fires when 25% of the content has played.
+          </p>
+          <p><strong>videoCompleted50</strong> - Fires when 50% of the content has played.
+          </p>
+          <p><strong>videoCompleted75</strong> - Fires when 75% of the content has played.
+          </p>
+          <p><strong>videoCompleted100</strong> - Fires when 100% of the content has played.
+          </p>
+          <h2 id="viewability-2102">Viewability
+          </h2>
+          <p>scope: Instream/Outstream
+          </p>
+          <p><strong>isViewable</strong> - Returns a boolean which is true if the player is 50% in view and in an active tab, and false if it’s below 50% or in an inactive tab.
+          </p>
+          <h2 id="playback-6717">Playback
+          </h2>
+          <p>scope: Instream
+          </p>
+          <p><strong>play</strong> - Fires when a new video is started. Will get video details object on eventData.
+          </p>
+          <p><strong>pause</strong> - Fires when a new video is paused. Will get video details object on eventData.
+          </p>
+          <h2 id="volume-7215">Volume
+          </h2>
+          <p>scope: Instream/Outstream
+          </p>
+          <p><strong>volumeChanged</strong> - Fires when player’s volume has changed. Contains the new value.
+          </p>
+          <h2 id="resize-3113">Resize
+          </h2>
+          <p><strong>sizeChanged</strong> (scope: Instream/Outstream) - Fires when player’s size changes and returns the new value as - (width, height).
+          </p>
+          <p><strong>fullscreenChanged</strong> (scope: Instream) - Fires when player’s fullscreen state changes and returns the new value as a boolean.
+          </p>
+          <p><strong>collapsed</strong> (scope: Outstream) - Returns a boolean which is true if the player is collapsed - (can be collapsed if set to ExpandWithAd or EndAdBreakPolicy set to Hide), or false when the player returns from being collapsed.
+          </p>
+          <h2 id="controls-1241">Controls
+          </h2>
+          <p>scope: Instream
+          </p>
+          <p><strong>qualityChanged</strong> - Fires when the player’s quality has changed, and returns the new quality value.
+          </p>
+          <p><strong>subtitlesVisibilityChanged</strong> - Fires when video’s subtitles turned on or off, and returns to current state.
+          </p>
+          <h2 id="ui-interactions-8900">UI interactions
+          </h2>
+          <p>scope: Instream
+          </p>
+          <p><strong>playerClicked</strong> - Fires when the player was clicked in the click Url area. This event will only be fired when the video is playing. This event will also pass in a video details object.
+          </p>
+          <h2 id="errors-6982">Errors
+          </h2>
+          <p><strong>playError</strong> (scope: Instream) - Fires when playing the video fails. Generates an error message.
+          </p>
+          <p><strong>adError</strong> (scope: Instream/Outstream) - Fires when the ad fails.
+          </p>
+          <h2 id="gallery-1077">Gallery
+          </h2>
+          <p><strong>galleryCardClicked</strong> (scope: Instream) - Fires when a gallery card was clicked.
+          </p>
+          <h1 id="-api-functions-6092">
+            <a id="playerApi"></a>API Functions
+          </h1>
+          <p>The following is the player API object, which the callback function will be called with if the player has rendered successfully. Its methods are described below:
+          </p>
+          <h2 id="meta-8311">Meta
+          </h2>
+          <p><strong>.getPlayerType()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This returns the PlayerTypeEnum value which represents either the Instream or the Outstream player.
+          </p>
+          <p><strong>.getPlaylistId()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This returns the id of the playlist currently playing.
+          </p>
+          <p><strong>.getVideoDetails()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This returns an object containing the details of the video currently playing:
+          </p>
+          <ul>
+            <li>id: String.</li>
+            <li>title: String.</li>
+            <li>description: String.</li>
+            <li>duration: Number with seconds.</li>
+            <li>keywords: Array of strings.</li>
+            <li>customFields: array of custom metadata depicted as <em>name - value </em> objects</li>
+          </ul>
+          <p><em aria-label="Note">If the video doesn't start ("videoStarted" event), then it will return undefined.</em>
+          </p>
+          <p><strong>.getVideoCurrentPosition()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This returns the position of the video currently playing in seconds.
+          </p>
+          <p><strong>.getVideoDuration()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This returns the total duration of the video currently playing in seconds.
+          </p>
+          <h2 id="playback-9079">Playback
+          </h2>
+          <p><strong>.play()</strong>
+          </p>
+          <p>scope: scope: Instream/Outstream
+          </p>
+          <p><em aria-label="Note">For the Outstream player, it will play only if an ad that was running has been paused, otherwise this function does not apply.</em>
+          </p>
+          <p>This sets the player state to “play”
+          </p>
+          <pre>
+playerApi.play();
+</pre>
+          <p><strong>.pause()</strong>
+          </p>
+          <p>scope: scope: Instream/Outstream
+          </p>
+          <p><em aria-label="Note">For the Outstream player, it will pause only if an ad is playing.</em>
+          </p>
+          <p>This sets the player state to “pause”
+          </p>
+          <pre>
+playerApi.pause();
+</pre>
+          <h2 id="viewability-6898">Viewability
+          </h2>
+          <p><strong>.isViewable()</strong>
+          </p>
+          <p>scope: scope: Instream/Outstream
+          </p>
+          <p>This returns a boolean which is true if the player is 50% in view and in an active tab.
+          </p>
+          <p>It will be false if it’s below 50% or in an inactive tab.
+          </p>
+          <pre>
+var isViewable = playerApi.isViewable();
+</pre>
+          <p><strong>.setViewableThreshold(threshold)</strong>
+          </p>
+          <p>scope: scope: Instream/Outstream
+          </p>
+          <p>This sets the viewable threshold, which means how much is the player in view. The threshold should be a numeric value between 0 and 1.
+          </p>
+          <p>For example, this will set the viewable threshold to 0.5, meaning the player is 50% into view:
+          </p>
+          <pre>
+playerApi.setViewableThreshold(0.5);
+</pre>
+          <p>This will make the player completely out of view:
+          </p>
+          <pre>
+playerApi.setViewableThreshold(0);
+</pre>
+          <h2 id="volume-4162">Volume
+          </h2>
+          <p><strong>.setVolume(volume)</strong>
+          </p>
+          <p>scope: scope: Instream/Outstream
+          </p>
+          <p>This sets the player volume to a level between 0 and 1.
+          </p>
+          <pre>
+playerApi.setVolume(0.3);
+</pre>
+          <p><strong>.getVolume()</strong>
+          </p>
+          <p>scope: scope: Instream/Outstream
+          </p>
+          <p>This gets the player's current volume.
+          </p>
+          <pre>
+let volume: number = playerApi.getVolume();
+</pre>
+          <h2 id="resize-9017">Resize
+          </h2>
+          <p><strong>.setSize(width, height)</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>This resizes the player to a specified size.
+          </p>
+          <pre>
+playerApi.setSize(1024, 640);
+</pre>
+          <p><strong>.getSize()</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>This gets the player’s current size.
+          </p>
+          <pre>
+let size: [number, number] = playerApi.getSize();
+</pre>
+          <p><strong>.toggleFullscreen(enterFullscreen)</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>This toggles the player's full screen state. Note: Only use this function on user interaction.
+          </p>
+          <p>The `enterFullscreen` parameter is a boolean. If this parameter is not provided, it will toggle the state.
+          </p>
+          <pre>
+playerApi.toggleFullscreen();
+</pre>
+          <p><strong>.toggleFullscreenButton(show)</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This shows or hides the player fullscreen button based on the boolean value. Said value is necessary.
+          </p>
+          <pre>
+playerApi.toggleFullscreenButton(true);
+</pre>
+          <h2 id="controls-8279">Controls
+          </h2>
+          <p><strong>.setQuality(quality)</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This sets the video resolution to the specified quality from QualityEnum.
+          </p>
+          <pre>
+playerApi.setQuality(cnx.configEnums.QualityEnum.Medium360p);
+</pre>
+          <p><strong>.getQuality()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This gets the video’s current resolution.
+          </p>
+          <pre>
+let size: number = playerApi.getQuality();
+</pre>
+          <p><strong>.getAvailableQualities()</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This returns an array of available resolutions.
+          </p>
+          <pre>
+let size: number = playerApi.getAvailableQualities();
+// eg: size = [144, 240, 360, 480, 720, 1080]
+</pre>
+          <p><strong>.toggleSubtitles(show)</strong>
+          </p>
+          <p>scope: Instream
+          </p>
+          <p>This shows or hides the video subtitles based on the given boolean. Said value is necessary.
+          </p>
+          <pre>
+playerApi.toggleSubtitles(false);
+</pre>
+          <h2 id="advertising-8798">Advertising
+          </h2>
+          <p><strong>.enableAdvertising()</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>If previously disabled by the .disableAdvertising call, it will enable it back.
+          </p>
+          <p><em aria-label="Note">All advertising settings previously given to init, apply in this case as well.</em>
+          </p>
+          <p><strong>.disableAdvertising()</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>This pauses the player advertising.
+          </p>
+          <p>Note: If there is an ad showing, the ad will finish by the time the advertising has stopped.
+          </p>
+          <p><strong>.setMacros(customMacros)</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>This pauses the player advertising. Allows publisher to set custom macros. It uses key value pairs of macros { key: value }.
+          </p>
+          <pre>
+let customMacros = { first_macro: 'my first value', second_macro: 'my second value' }
+playerApi.setMacros(customMacros);
+</pre>
+          <p>The Connatix Macros will not be overridden. This is the list of Connatix Macros:
+          </p>
+          <pre>
+PageUrl = 'PAGE_URL',
+AdPosition = 'AD_POSITION',
+VideoTitle = 'VIDEO_TITLE',
+MediaTitle = 'MEDIA_TITLE',
+VideoDuration = 'VIDEO_DURATION',
+ContentLength = 'CONTENT_LENGTH',
+VideoDescription = 'VIDEO_DESCRIPTION',
+VideoUrl = 'VIDEO_URL',
+VideoId = 'VIDEO_ID',
+VideoTime = 'VIDEO_TIME',
+DescriptionUrl = 'DESCRIPTION_URL',
+VideoKeywords = 'VIDEO_KEYWORDS',
+Autoplay = 'AUTOPLAY',
+UserAgent = 'UA',
+Ip = 'IP',
+CashBuster = 'CB',
+Width = 'WIDTH',
+Height = 'HEIGHT',
+Domain = 'DOMAIN',
+SourceReferrer = 'SOURCE_REFERRER',
+Gdpr = 'GDPR',
+Consent = 'CONSENT',
+Ctd = 'CTD',
+Publisher = 'PUBLISHER',
+Random = 'RAND',
+Site = 'SITE',
+SubId = 'SUB_ID',
+Url = 'URL',
+UserLat = 'USER_LAT',
+UserLong = 'USER_LONG',
+UsPrivacyString = 'US_PRIVACY',
+DoNotTrack = 'DNT',
+</pre>
+          <h2 id="destroy-3552">Destroy
+          </h2>
+          <p><strong>.destroy()</strong>
+          </p>
+          <p>scope: Instream/Outstream
+          </p>
+          <p>This destroys the player, including the DOM rendered elements. After calling destroy, the last event the player sends is the "removed" event. By doing so, all functionality and events stop working on the API object.
+          </p>
+        </article>
+      </section>
+    </main>
+    <footer>
+      <p>© 2020 Connatix Holdings Inc., All Rights Reserved.
+      </p>
+    </footer>
+    <p>
+      <iframe data-testid="abe-iframe" id="automaticAnswers" src="./Video%20Player%20API%20%E2%80%93%20Connatix_files/saved_resource.html" tabindex="-1" title="Feedback for article suggestion" url="about:blank">
+      </iframe>
+    </p>
+  </body>
+</html>
